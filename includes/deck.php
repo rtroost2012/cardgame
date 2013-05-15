@@ -25,6 +25,4 @@ class Deck extends Stack
 		array_push($this->cards, 'J*');
 		array_push($this->cards, 'J*');
 	}
-
-	// remove card ($array) -> bij '1' alle 1's weghalen uit de stack, bij een teken ervoor alleen de specifieke kaart weghalen
 }

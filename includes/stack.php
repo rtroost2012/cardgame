@@ -8,7 +8,7 @@ class Stack
 		//
 	}
 
-	public function giveCard($amount = 1) {
+	public function giveCards($amount = 1) {
 		$cards = array();
 		
 		for($i = 0; $i < $amount; $i++) { // loop through amount of cards to add
@@ -17,7 +17,7 @@ class Stack
 			if($card) {
 				array_push($cards, $card); // save card to array
 			} else {
-				// deck ran out of crads
+				// deck ran out of cards
 			}
 		}
 
@@ -25,8 +25,8 @@ class Stack
 		//return ($card ? $card : 'No cards left in the game!');
 	}
 
-	public function countCards($in = ' ') {
-		return ($in == ' ' ? count($this->cards) : count($in)); // return stack cards or count another object
+	public function countCards() {
+		return count($this->cards); // return amount of cards
 	}
 
 	public function shuffle() {

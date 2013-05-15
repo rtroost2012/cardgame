@@ -1,6 +1,10 @@
 <?PHP
 class Player extends Stack
 {
+	public function __construct() {
+		//
+	}
+
 	public function addCards($cards) {
 		$this->cards = array_merge($this->cards, $cards); // add cards to array
 	}
