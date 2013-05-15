@@ -39,3 +39,7 @@ $player1->debug();
 
 echo 'Deck has currently ' . $deck->countCards() . ' cards left:';
 $deck->debug();
+
+
+$player1->removeCards(array('&diams;K', 'J*'));
+$player1->debug();
