@@ -2,7 +2,7 @@
 class Player extends Stack
 {
 	public function __construct() {
-		//
+		// 
 	}
 
 	public function addCards($cards) {
@@ -27,6 +27,26 @@ class Player extends Stack
 					$this->cards = array_values($this->cards); // re-calc indexes
 				}
 			}
+		}
+	}
+
+	public function renderCards() {
+		foreach ($this->cards as $card) {
+			// retrieve card number from array
+			$startIndex = strpos($card, ';') + 1;
+			$endIndex = strlen($card) - $startIndex;
+			$cardNumber = substr($card, $startIndex, 99);
+
+			if(strpos($card, '&hearts;') !== false)
+				echo "<img src='images/h_" . $cardNumber . ".gif' alt='card'/>"; 
+			else if(strpos($card, '&diams;') !== false)
+				echo "<img src='images/d_" . $cardNumber . ".gif' alt='card'/>"; 
+			else if(strpos($card, '&spades;') !== false)
+				echo "<img src='images/s_" . $cardNumber . ".gif' alt='card'/>"; 
+			else if(strpos($card, '&clubs;') !== false)
+				echo "<img src='images/c_" . $cardNumber . ".gif' alt='card'/>";
+			else
+				echo "<img src='images/jk.gif' alt='card'/>";
 		}
 	}
 }

@@ -5,7 +5,7 @@ class Stack
 	protected $card_symbols = array('&spades;', '&clubs;', '&hearts;', '&diams;');
 
 	public function __construct() {
-		//
+		// 
 	}
 
 	public function giveCards($amount = 1) {
@@ -16,9 +16,9 @@ class Stack
 
 			if($card) {
 				array_push($cards, $card); // save card to array
-			} else {
+			} /* else {
 				// deck ran out of cards
-			}
+			}*/
 		}
 
 		return $cards;
@@ -33,8 +33,8 @@ class Stack
 		return shuffle($this->cards);
 	}
 
-	public function clear() { //reset
-		$this->cards = array();
+	public function clear() { 
+		$this->cards = array(); // reset deck
 	}
 
 	public function debug() {

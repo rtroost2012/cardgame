@@ -22,7 +22,7 @@ class Deck extends Stack
 		}
 
 		// jokers
-		array_push($this->cards, 'J*');
-		array_push($this->cards, 'J*');
+		array_push($this->cards, 'JK');
+		array_push($this->cards, 'JK');
 	}
 }
