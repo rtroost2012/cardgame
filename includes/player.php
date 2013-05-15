@@ -32,21 +32,13 @@ class Player extends Stack
 
 	public function renderCards() {
 		foreach ($this->cards as $card) {
-			// retrieve card number from array
-			$startIndex = strpos($card, ';') + 1;
+			// retrieve card number and card prefix
+			$startIndex = strpos($card, '_') + 1;
 			$endIndex = strlen($card) - $startIndex;
-			$cardNumber = substr($card, $startIndex, 99);
+			$cardPrefix = substr($card, 0, $startIndex);
+			$cardNumber = substr($card, $startIndex, strlen($card) - $startIndex);
 
-			if(strpos($card, '&hearts;') !== false)
-				echo "<img src='images/h_" . $cardNumber . ".gif' alt='card'/>"; 
-			else if(strpos($card, '&diams;') !== false)
-				echo "<img src='images/d_" . $cardNumber . ".gif' alt='card'/>"; 
-			else if(strpos($card, '&spades;') !== false)
-				echo "<img src='images/s_" . $cardNumber . ".gif' alt='card'/>"; 
-			else if(strpos($card, '&clubs;') !== false)
-				echo "<img src='images/c_" . $cardNumber . ".gif' alt='card'/>";
-			else
-				echo "<img src='images/jk.gif' alt='card'/>";
+			echo "<img src='images/" . $cardPrefix . $cardNumber . ".gif' alt='card'/>"; // twig render
 		}
 	}
 }

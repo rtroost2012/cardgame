@@ -2,7 +2,7 @@
 class Stack
 {
 	protected $cards = array();
-	protected $card_symbols = array('&spades;', '&clubs;', '&hearts;', '&diams;');
+	protected $card_symbols = array('S_', 'C_', 'H_', 'D_'); // spades, clubs, hearts, diamonds
 
 	public function __construct() {
 		// 
@@ -29,15 +29,15 @@ class Stack
 		return count($this->cards); // return amount of cards
 	}
 
+	public function getCards() {
+		return $this->cards; // return cards
+	}
+
 	public function shuffle() {
 		return shuffle($this->cards);
 	}
 
 	public function clear() { 
 		$this->cards = array(); // reset deck
-	}
-
-	public function debug() {
-		echo '<pre>' . var_export($this->cards, true) . '</pre>';
 	}
 }

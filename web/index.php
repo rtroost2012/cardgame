@@ -42,7 +42,7 @@ $app->get('/', function() use ($app, $session) {
 	} else { // game already started
 		$player = $session->get('player_obj');
 		$player->renderCards();	
-		$session->invalidate();
+		$session->invalidate(); // close session
 		//echo '<p>Deck has currently ' . $deck->countCards() . ' cards left</p>';
 	}
 
