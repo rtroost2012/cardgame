@@ -43,7 +43,7 @@ $app->match('/', function(Request $request) use ($app, $session) {
 		// process commands if needed
 		if($request->getMethod() == 'POST') {
 			if($request->get('take')) {
-				$player->addCards($deck->giveCards(1)); // add one card to player cards
+				$player->addCards($deck->giveCards()); // add one card to player cards
 			} else if($request->get('reset')) {
 				$session->invalidate(); // reset
 				header("location: /"); // go to main URL for starting a new game
@@ -56,7 +56,6 @@ $app->match('/', function(Request $request) use ($app, $session) {
 	return $app['twig']->render('game.twig', array('playercards' => $player->getCards(),
 												   'deck_cardsleft' => $deck->countCards()));
 });
-
 
 $app->get('/remove/{card}', function($card) use ($session, $app) {
 	// remove card

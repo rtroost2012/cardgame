@@ -34,7 +34,7 @@ class Stack
 	}
 
 	public function shuffle() {
-		return shuffle($this->cards);
+		return shuffle($this->cards); // shuffle cards
 	}
 
 	public function clear() { 

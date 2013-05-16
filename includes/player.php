@@ -5,11 +5,11 @@ class Player extends Stack
 		// 
 	}
 
-	public function addCards($cards) {
+	public function addCards(array $cards) {
 		$this->cards = array_merge($this->cards, $cards); // add cards to array
 	}
 
-	public function removeCards($cards = array(), $allOccurrences = false) {
+	public function removeCards(array $cards, $allOccurrences = false) {
 		foreach($cards as $card) {
 			$index = array_search($card, $this->cards); // does the card array contain the card we are looking for?
 
