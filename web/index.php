@@ -31,12 +31,18 @@ $app->match('/', function(Request $request) use ($app, $session) {
 		$player = new Player();
 		$player->addCards($deck->giveCards(7));
 
+		// create opponent and give cards
+		$opponent = new Player();
+		$opponent->addCards($deck->giveCards(7));
+
 		// save both to session
 		$session->set('deck_obj', $deck);
 		$session->set('player_obj', $player);
+		$session->set('opponent_obj', $opponent);
 	} else { // game already started
 		// set objects to session ones
 		$player = $session->get('player_obj');
+		$opponent = $session->get('opponent_obj');
 		$deck = $session->get('deck_obj');
 
 		// process commands if needed
@@ -52,7 +58,8 @@ $app->match('/', function(Request $request) use ($app, $session) {
 	}
 
 	// render cards
-	return $app['twig']->render('game.twig', array('playercards' => $player->getCards(),
+	return $app['twig']->render('game.twig', array('opponentcards' => $opponent->getCards(),
+												   'playercards' => $player->getCards(),
 												   'deck_cardsleft' => $deck->countCards()));
 });
 
@@ -60,10 +67,12 @@ $app->get('/remove/{card}', function($card) use ($app, $session) {
 	// remove card
 	$deck = $session->get('deck_obj');
 	$player = $session->get('player_obj');
+	$opponent = $session->get('opponent_obj');
 	$player->removeCards(array($card));
 
 	// render cards
 	return $app['twig']->render('game.twig', array('playercards' => $player->getCards(),
+												   'opponentcards' => $opponent->getCards(),
 												   'deck_cardsleft' => $deck->countCards()));
 });
 

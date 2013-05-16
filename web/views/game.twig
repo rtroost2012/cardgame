@@ -7,7 +7,33 @@
 
 	<body>
 		<!-- opponent -->
+		{% if opponentcards | length != 0 %}
+			<table>
+				<tbody>
+					<!-- card images -->
+					{% for card in opponentcards %}
+						{% set cards_per_row = 10 %} <!-- maximum cards per row -->
 
+						{% if(loop.index == 1) %} <!-- first row -->
+							<tr>
+						{% endif %}
+
+						<td>
+							<img src='/images/{{ card }}.gif' alt='card'/><br>
+						</td>
+
+						{% if((loop.index % cards_per_row) == 0) %} <!-- new row needed? -->
+							</tr> <!-- close old row -->
+							<tr> <!-- start new row -->
+						{% endif %}
+
+						{% if(loop.index == opponentcards | length) %} <!-- last row -->
+							</tr>
+						{% endif %}
+					{% endfor %}
+				</tbody>
+			</table>
+		{% endif %}
 
 		<!-- played çardstack in the middle -->
 		<div class='middlestack'>
@@ -19,7 +45,6 @@
 			<img src='/images/blank.gif' alt='card'/>
 		</div>
 
-		<input type='submit' name='take' value='Take card'/>
 		Deck currently has {{ deck_cardsleft }} cards left.
 
 		<!-- player -->
@@ -56,6 +81,7 @@
 			<p>
 				You have currently have {{ playercards | length }} cards.<br>
 				<input type='submit' name='reset' value='Reset game'/>
+				<input type='submit' name='take' value='Take card'/>
 			</p>
 		</form>
 
