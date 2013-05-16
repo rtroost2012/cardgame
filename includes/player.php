@@ -29,16 +29,4 @@ class Player extends Stack
 			}
 		}
 	}
-
-	public function renderCards() {
-		foreach ($this->cards as $card) {
-			// retrieve card number and card prefix
-			$startIndex = strpos($card, '_') + 1;
-			$endIndex = strlen($card) - $startIndex;
-			$cardPrefix = substr($card, 0, $startIndex);
-			$cardNumber = substr($card, $startIndex, strlen($card) - $startIndex);
-
-			echo "<img src='images/" . $cardPrefix . $cardNumber . ".gif' alt='card'/>"; // twig render
-		}
-	}
 }

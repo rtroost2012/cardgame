@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Cardgame</title>
+		<link rel="stylesheet" href="views/style.css" type="text/css">
+	</head>
+
+	<body>
+		<form action='/' method='POST'>
+			<table border=1>
+				<tbody>
+					<!-- card images -->
+					{% set closerow = 0 %}
+
+					{% for card in playercards %}
+						{% set cards_per_row = 10 %} <!-- maximum cards per row -->
+
+						{% if(loop.index == 1) %} <!-- first row -->
+							<tr>
+						{% endif %}
+
+						<td>
+							<img src='images/{{ card }}.gif' alt='card'/>
+						</td>
+
+						{% if((loop.index % cards_per_row) == 0) %} <!-- new row needed? -->
+							</tr> <!-- close old row -->
+							<tr> <!-- start new row -->
+						{% endif %}
+
+						{% if(loop.index == playercards | length) %} <!-- last row -->
+							</tr>
+						{% endif %}
+					{% endfor %}
+				</tbody>
+			</table>
+
+			<p>
+				You have currently have {{ playercards | length }} cards.<br>
+				Deck currently has {{ deck_cardsleft }} cards left.
+
+				<input type='submit' name='take' value='Take card'/>
+				<input type='submit' name='reset' value='Reset game'/>
+			</p>
+		</form>
+	</body>
+</html>
