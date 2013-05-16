@@ -6,8 +6,25 @@
 	</head>
 
 	<body>
+		<!-- opponent -->
+
+
+		<!-- played çardstack in the middle -->
+		<div class='middlestack'>
+			<img src='/images/H_A.gif' alt='card'/>
+		</div>
+
+		<!-- storage stack in the middle -->
+		<div class='middlestack'>
+			<img src='/images/blank.gif' alt='card'/>
+		</div>
+
+		<input type='submit' name='take' value='Take card'/>
+		Deck currently has {{ deck_cardsleft }} cards left.
+
+		<!-- player -->
 		{% if playercards | length != 0 %}
-			<table border=0>
+			<table>
 				<tbody>
 					<!-- card images -->
 					{% for card in playercards %}
@@ -38,11 +55,12 @@
 		<form action='/' method='POST'>
 			<p>
 				You have currently have {{ playercards | length }} cards.<br>
-				Deck currently has {{ deck_cardsleft }} cards left.
-
-				<input type='submit' name='take' value='Take card'/>
 				<input type='submit' name='reset' value='Reset game'/>
 			</p>
 		</form>
+
+		<footer>
+			Cardgame v0.1
+		</footer>
 	</body>
 </html>
