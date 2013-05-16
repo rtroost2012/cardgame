@@ -46,8 +46,8 @@ $app->match('/', function(Request $request) use ($app, $session) {
 				$player->addCards($deck->giveCards(1)); // add one card to player cards
 			} else if($request->get('reset')) {
 				$session->invalidate(); // reset
-				header("location: /");
-				exit;
+				header("location: /"); // go to main URL for starting a new game
+				exit; // don't further execute the code
 			}
 		}
 	}
@@ -57,8 +57,16 @@ $app->match('/', function(Request $request) use ($app, $session) {
 												   'deck_cardsleft' => $deck->countCards()));
 });
 
-$app->get('/reset', function() use ($session) {
-	$session->invalidate(); // close session to reset board
+
+$app->get('/remove/{card}', function($card) use ($session, $app) {
+	// remove card
+	$deck = $session->get('deck_obj');
+	$player = $session->get('player_obj');
+	$player->removeCards(array($card));
+
+	// render cards
+	return $app['twig']->render('game.twig', array('playercards' => $player->getCards(),
+												   'deck_cardsleft' => $deck->countCards()));
 });
 
 // uitvoeren

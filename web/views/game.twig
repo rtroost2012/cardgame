@@ -6,21 +6,25 @@
 	</head>
 
 	<body>
-		<form action='/' method='POST'>
+		{% if playercards | length != 0 %}
 			<table border=1>
 				<tbody>
 					<!-- card images -->
 					{% set closerow = 0 %}
 
 					{% for card in playercards %}
-						{% set cards_per_row = 10 %} <!-- maximum cards per row -->
+						{% set cards_per_row = 7 %} <!-- maximum cards per row -->
 
 						{% if(loop.index == 1) %} <!-- first row -->
 							<tr>
 						{% endif %}
 
 						<td>
-							<img src='images/{{ card }}.gif' alt='card'/>
+							<img src='/images/{{ card }}.gif' alt='card'/>
+						</td>
+
+						<td>
+							<input type='button' onClick="location.href='/remove/{{ card }}'" value='Remove'/>
 						</td>
 
 						{% if((loop.index % cards_per_row) == 0) %} <!-- new row needed? -->
@@ -34,7 +38,9 @@
 					{% endfor %}
 				</tbody>
 			</table>
+		{% endif %}
 
+		<form action='/' method='POST'>
 			<p>
 				You have currently have {{ playercards | length }} cards.<br>
 				Deck currently has {{ deck_cardsleft }} cards left.
