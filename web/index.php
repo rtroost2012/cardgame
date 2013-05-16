@@ -11,7 +11,6 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
 ));
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 // start session
@@ -57,7 +56,7 @@ $app->match('/', function(Request $request) use ($app, $session) {
 												   'deck_cardsleft' => $deck->countCards()));
 });
 
-$app->get('/remove/{card}', function($card) use ($session, $app) {
+$app->get('/remove/{card}', function($card) use ($app, $session) {
 	// remove card
 	$deck = $session->get('deck_obj');
 	$player = $session->get('player_obj');
@@ -68,5 +67,4 @@ $app->get('/remove/{card}', function($card) use ($session, $app) {
 												   'deck_cardsleft' => $deck->countCards()));
 });
 
-// uitvoeren
 $app->run();

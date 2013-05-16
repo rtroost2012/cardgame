@@ -16,13 +16,11 @@ class Stack
 
 			if($card) {
 				array_push($cards, $card); // save card to array
-			} /* else {
-				// deck ran out of cards
-			}*/
+			} else {
+				break; // deck ran out of cards
+			}
 		}
-
 		return $cards;
-		//return ($card ? $card : 'No cards left in the game!');
 	}
 
 	public function countCards() {

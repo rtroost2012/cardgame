@@ -7,23 +7,18 @@
 
 	<body>
 		{% if playercards | length != 0 %}
-			<table border=1>
+			<table border=0>
 				<tbody>
 					<!-- card images -->
-					{% set closerow = 0 %}
-
 					{% for card in playercards %}
-						{% set cards_per_row = 7 %} <!-- maximum cards per row -->
+						{% set cards_per_row = 10 %} <!-- maximum cards per row -->
 
 						{% if(loop.index == 1) %} <!-- first row -->
 							<tr>
 						{% endif %}
 
 						<td>
-							<img src='/images/{{ card }}.gif' alt='card'/>
-						</td>
-
-						<td>
+							<img src='/images/{{ card }}.gif' alt='card'/><br>
 							<input type='button' onClick="location.href='/remove/{{ card }}'" value='Remove'/>
 						</td>
 
