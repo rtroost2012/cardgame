@@ -18,82 +18,29 @@ use Symfony\Component\HttpFoundation\Session\Session;
 $session = new Session();
 $session->start();
 
+
 // routes
 $app->match('/', function(Request $request) use ($app, $session) {
-	if(!$session->get('started')) { // no game started yet
-		// session init
-		$session->set('started', true);
-
-		// create deck
-		$deck = new Deck();
-		$deck->shuffle();
-
-		// create playing stack in the middle with one card to start with
-		$playStack = new Stack();
-		$playStack->addCards($deck->giveCards());
-
-		// create player and give cards
-		$player = new Player();
-		$player->addCards($deck->giveCards(7));
-
-		// create opponent and give cards
-		$opponent = new Player();
-		$opponent->addCards($deck->giveCards(7));
-
-		// save instances to session
-		$session->set('playStack_obj', $playStack);
-		$session->set('deck_obj', $deck);
-		$session->set('player_obj', $player);
-		$session->set('opponent_obj', $opponent);
-	} else { // game already started
-		// set objects to session ones
-		$playStack = $session->get('playStack_obj');
-		$deck = $session->get('deck_obj');
-		$player = $session->get('player_obj');
-		$opponent = $session->get('opponent_obj');
-
-		// process commands if needed
-		if($request->getMethod() == 'POST') {
-			if($request->get('take')) {
-				$player->addCards($deck->giveCards()); // add one card to player cards
-			} else if($request->get('reset')) {
-				$session->invalidate(); // reset
-				header("location: /"); // go to main URL for starting a new game
-				exit; // don't further execute the code
-			}
-		}
-	}
-
-	//echo '<pre>' . var_export($playStack->getCards(), true) . '</pre>';
-
-	// get last card placed on stack
-	$lastCard = $playStack->getCards();
-	$lastCard = $lastCard[$playStack->countCards()-1];
+	// init cardgame class
+	$cardGame = new CardGame($app, $session, $request);
 
 	// render cards
-	return $app['twig']->render('game.twig', array('playstack_card' => $lastCard,
-													'opponentcards' => $opponent->getCards(),
-													'playercards' => $player->getCards(),
-													'deck_cardsleft' => $deck->countCards()));
+	return $cardGame->renderCards($app);
 });
 
 $app->get('/play/{card}', function($card) use ($app, $session) {
-	// init cardgame class for validating move
-	$cardGame = new CardGame($session);
+	// init cardgame class
+	$cardGame = new CardGame($app, $session);
 
+	// validate player move
 	$playerMove_result = $cardGame->ValidateMove('player', $card);
 
 	if($playerMove_result['validMove']) { // player made a valid move
-		echo 'Player made a valid move ...<br>';
-		echo 'Executing computer move ...<br>';
-
 		$computerMove_result = $cardGame->computerMove();
-
+		return $app['twig']->render('game.twig', $computerMove_result['validateInfo']); // render cards
+	} else { // didn't make a valid move
 		// render cards
-		return $app['twig']->render('game.twig', $computerMove_result['validateInfo']);
-	} else { // didn't make a valid move,=
-		// render cards
-		return $app['twig']->render('game.twig', $playerMove_result['validateInfo']);
+		return $app['twig']->render('game.twig', $playerMove_result['validateInfo']);// render cards
 	}
 });
 

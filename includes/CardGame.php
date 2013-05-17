@@ -5,12 +5,63 @@ class CardGame
 	private $deck;
 	private $players;
 
-	public function __construct($session) {
-		// init session vars
-		$this->playStack = $session->get('playStack_obj');
-		$this->deck = $session->get('deck_obj');
-		$this->players = array('player' => $session->get('player_obj'),
-								'opponent' => $session->get('opponent_obj'));
+	public function __construct($app, $session, $request = NULL) {
+		if(!$session->get('started')) { // no game started yet
+			// session init
+			$session->set('started', true);
+
+			// create deck
+			$this->deck = new Deck();
+			$this->deck->shuffle();
+
+			// create playing stack in the middle with one card to start with
+			$this->playStack = new Stack();
+			$this->playStack->addCards($this->deck->giveCards());
+
+			// create player and give cards
+			$this->players['player'] = new Player();
+			$this->players['player']->addCards($this->deck->giveCards(7));
+
+			// create opponent and give cards
+			$this->players['opponent'] = new Player();
+			$this->players['opponent']->addCards($this->deck->giveCards(7));
+
+			// save instances to session
+			$session->set('playStack_obj', $this->playStack);
+			$session->set('deck_obj', $this->deck);
+			$session->set('player_obj', $this->players['player']);
+			$session->set('opponent_obj', $this->players['opponent']);
+		} else { // game already started
+			// set objects to session ones
+			$this->playStack = $session->get('playStack_obj');
+			$this->deck = $session->get('deck_obj');
+			$this->players = array('player' => $session->get('player_obj'),
+									'opponent' => $session->get('opponent_obj'));
+
+			if(isset($request) && $request->getMethod() == 'POST') {
+				if($request->get('take')) { // take a player card
+					$this->players['player']->addCards($this->deck->giveCards()); // add one card to player cards
+
+					$computerMove_result = $this->computerMove();
+					$this->renderCards($app, $computerMove_result['validateInfo']); // render cards
+				} else if($request->get('reset')) {
+					$session->invalidate(); // reset
+					header("location: /"); // go to main URL for starting a new game
+					exit; // don't further execute the code
+				}
+			}
+		}
+	}
+
+	public function renderCards($app, array $info = NULL) {
+		if(!isset($info)) { // render with current info
+			return $app['twig']->render('game.twig', array('playstack_card' => $this->lastOnStack(),
+													'opponentcards' => $this->players['opponent']->getCards(),
+													'playercards' => $this->players['player']->getCards(),
+													'deck_cardsleft' => $this->deck->countCards()));
+		} else {
+			return $app['twig']->render('game.twig', $info); // render with different info
+		}
 	}
 
 	private function array_find($needle, $haystack) { // search for a partial value in an array and return full value
@@ -87,14 +138,9 @@ class CardGame
 		$available_card_type = $this->array_find($type_stack, $computer_cards); // do we have a card with the same type?
 		$available_card_number = $this->array_find($number_stack, $computer_cards); // do we have a card with the same type?
 
-		$move_result = NULL;
-
 		if(!$available_card_type && !$available_card_number) { // no card with the same type or number
-			$this->players['opponent']->addCards($this->deck->giveCards());
-			echo 'grabbing card';
+			$this->players['opponent']->addCards($this->deck->giveCards()); // grab a card
 		} else { // play the card
-			$playcard = '';
-
 			if($available_card_type != '') { // not the same type but the same number
 				//echo 'valid card type:' . $available_card_type;
 				$playcard =  $available_card_type;
@@ -106,7 +152,7 @@ class CardGame
 			}
 		}
 
-		if($move_result == NULL) { // pc is grabbing card
+		if(!isset($move_result)) { // pc is grabbing card
 			$validateInfo = array('playstack_card' => $this->lastOnStack(),
 						'opponentcards' => $this->players['opponent']->getCards(),
 						'playercards' => $this->players['player']->getCards(),
