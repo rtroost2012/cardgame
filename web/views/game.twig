@@ -81,6 +81,8 @@
 			<p>
 				{% if playercards | length == 0 %}
 					You win!<br>
+				{% elseif opponentcards | length == 0 %}
+					You lose!<br>
 				{% else %}
 					You have currently have {{ playercards | length }} {{ playercards | length == 1 ? 'card' : 'cards' }}.<br>
 					<input type='submit' name='take' value='Take card'/>

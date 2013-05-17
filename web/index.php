@@ -79,10 +79,22 @@ $app->match('/', function(Request $request) use ($app, $session) {
 
 $app->get('/play/{card}', function($card) use ($app, $session) {
 	// init cardgame class for validating move
-	$cardGame = new CardGame();
+	$cardGame = new CardGame($session);
 
-	// render cards
-	return $app['twig']->render('game.twig', $cardGame->ValidateMove($session, $card));
+	$playerMove_result = $cardGame->ValidateMove('player', $card);
+
+	if($playerMove_result['validMove']) { // player made a valid move
+		echo 'Player made a valid move ...<br>';
+		echo 'Executing computer move ...<br>';
+
+		$computerMove_result = $cardGame->computerMove();
+
+		// render cards
+		return $app['twig']->render('game.twig', $computerMove_result['validateInfo']);
+	} else { // didn't make a valid move,=
+		// render cards
+		return $app['twig']->render('game.twig', $playerMove_result['validateInfo']);
+	}
 });
 
 $app->run();
