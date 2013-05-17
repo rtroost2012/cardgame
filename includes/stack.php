@@ -8,7 +8,7 @@ class Stack
 		// 
 	}
 
-	public function giveCards($amount = 1) {
+	public function giveCards($playStack = NULL, $amount = 1) {
 		$cards = array();
 		
 		for($i = 0; $i < $amount; $i++) { // loop through amount of cards to add
@@ -17,7 +17,21 @@ class Stack
 			if($card) {
 				array_push($cards, $card); // save card to array
 			} else {
-				break; // deck ran out of cards
+				// how big is the stack?
+				$last = count($playStack->cards) - 1;
+
+				// remove all cards except the one that was played
+				$this->cards = array_slice($playStack->cards, 0, $last);
+				$this->cards = array_values($this->cards);
+				$this->shuffle();
+
+				// unset played cards
+				for($i = 0; $i < $last; $i++) {
+					unset($playStack->cards[$i]);
+				}
+
+				$playStack->cards = array_values($playStack->cards); //recount indexes
+				array_push($cards, array_pop($this->cards)); // save card to array
 			}
 		}
 		return $cards;

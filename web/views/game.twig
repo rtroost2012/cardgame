@@ -22,95 +22,109 @@
 	</head>
 
 	<body>
-		<!-- opponent -->
-		{% if opponentcards | length != 0 %}
-			<table>
-				<tbody>
-					<!-- card images -->
-					{% for card in opponentcards %}
-						{% set cards_per_row = 12 %} <!-- maximum cards per row -->
+		{% if playercards | length == 0 or opponentcards | length == 0 %}
+			{% if playercards | length == 0 %}
+				<div id="dialog-message" title="Information">
+					<p>You win!</p>
+				</div>
 
-						{% if(loop.index == 1) %} <!-- first row -->
-							<tr>
-						{% endif %}
+				You win!<br>
+			{% elseif opponentcards | length == 0 %}
+				<div id="dialog-message" title="Information">
+					<p>You lose!</p>
+				</div>
 
-						<td>
-							<img src='/images/{{ card }}.gif' alt='card'/><br>
-						</td>
+				You lose!<br>
+			{% endif %}
 
-						{% if((loop.index % cards_per_row) == 0) %} <!-- new row needed? -->
-							</tr> <!-- close old row -->
-							<tr> <!-- start new row -->
-						{% endif %}
-
-						{% if(loop.index == opponentcards | length) %} <!-- last row -->
-							</tr>
-						{% endif %}
-					{% endfor %}
-				</tbody>
-			</table>
-		{% endif %}
-
-		<!-- played çardstack in the middle -->
-		<div class='middlestack'>
-			<img src='/images/{{playstack_card}}.gif' alt='card'/>
-		</div>
-
-		<!-- storage stack in the middle -->
-		<div class='middlestack'>
-			<img src='/images/blank.gif' alt='card'/>
-		</div>
-
-		Deck currently has {{ deck_cardsleft }} cards left.
-
-		<!-- player -->
-		{% if playercards | length != 0 %}
-			<table>
-				<tbody>
-					<!-- card images -->
-					{% for card in playercards %}
-						{% set cards_per_row = 12 %} <!-- maximum cards per row -->
-
-						{% if(loop.index == 1) %} <!-- first row -->
-							<tr>
-						{% endif %}
-
-						<td>
-							<img src='/images/{{ card }}.gif' alt='card'/><br>
-							<input type='button' onClick="location.href='/play/{{ card }}'" value='Play'/>
-						</td>
-
-						{% if((loop.index % cards_per_row) == 0) %} <!-- new row needed? -->
-							</tr> <!-- close old row -->
-							<tr> <!-- start new row -->
-						{% endif %}
-
-						{% if(loop.index == playercards | length) %} <!-- last row -->
-							</tr>
-						{% endif %}
-					{% endfor %}
-				</tbody>
-			</table>
-		{% endif %}
-
-		<form action='/' method='POST'>
-			<p>
-				{% if playercards | length == 0 %}
-					You win!<br>
-				{% elseif opponentcards | length == 0 %}
-					You lose!<br>
-				{% else %}
-					You have currently have {{ playercards | length }} {{ playercards | length == 1 ? 'card' : 'cards' }}.<br>
-					<input type='submit' name='take' value='Take card'/>
-				{% endif %}
+			<form action='/' method='POST'>
 				<input type='submit' name='reset' value='Reset game'/>
-			</p>
-		</form>
+			</form>
+		{% else %}
+			<!-- opponent -->
+			{% if opponentcards | length != 0 %}
+				<table>
+					<tbody>
+						<!-- card images -->
+						{% for card in opponentcards %}
+							{% set cards_per_row = 12 %} <!-- maximum cards per row -->
 
-		{% if not validMove %}
-			<div id="dialog-message" title="Invalid move">
-			  <p>You tried to play an invalid card. You can only play a card with the same number or same type (hearts, spades, diams, clubs).</p>
+							{% if(loop.index == 1) %} <!-- first row -->
+								<tr>
+							{% endif %}
+
+							<td>
+								<img src='/images/{{ card }}.gif' alt='card'/><br>
+							</td>
+
+							{% if((loop.index % cards_per_row) == 0) %} <!-- new row needed? -->
+								</tr> <!-- close old row -->
+								<tr> <!-- start new row -->
+							{% endif %}
+
+							{% if(loop.index == opponentcards | length) %} <!-- last row -->
+								</tr>
+							{% endif %}
+						{% endfor %}
+					</tbody>
+				</table>
+			{% endif %}
+
+			<!-- played çardstack in the middle -->
+			<div class='middlestack'>
+				<img src='/images/{{playstack_card}}.gif' alt='card'/>
 			</div>
+
+			<!-- storage stack in the middle -->
+			<div class='middlestack'>
+				<img src='/images/blank.gif' alt='card'/>
+			</div>
+
+			Deck currently has {{ deck_cardsleft }} cards left.
+
+			<!-- player -->
+			{% if playercards | length != 0 %}
+				<table>
+					<tbody>
+						<!-- card images -->
+						{% for card in playercards %}
+							{% set cards_per_row = 12 %} <!-- maximum cards per row -->
+
+							{% if(loop.index == 1) %} <!-- first row -->
+								<tr>
+							{% endif %}
+
+							<td>
+								<img src='/images/{{ card }}.gif' alt='card'/><br>
+								<input type='button' onClick="location.href='/play/{{ card }}'" value='Play'/>
+							</td>
+
+							{% if((loop.index % cards_per_row) == 0) %} <!-- new row needed? -->
+								</tr> <!-- close old row -->
+								<tr> <!-- start new row -->
+							{% endif %}
+
+							{% if(loop.index == playercards | length) %} <!-- last row -->
+								</tr>
+							{% endif %}
+						{% endfor %}
+					</tbody>
+				</table>
+			{% endif %}
+
+			<form action='/' method='POST'>
+				<p>
+					You have currently have {{ playercards | length }} {{ playercards | length == 1 ? 'card' : 'cards' }}
+					<input type='submit' name='take' value='Take card'/>
+					<input type='submit' name='reset' value='Reset game'/>
+				</p>
+			</form>
+
+			{% if not validMove %}
+				<div id="dialog-message" title="Invalid move">
+					<p>You tried to play an invalid card. You can only play a card with the same number or same type (hearts, spades, diams, clubs).</p>
+				</div>
+			{% endif %}
 		{% endif %}
 
 		<footer>

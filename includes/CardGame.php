@@ -16,15 +16,15 @@ class CardGame
 
 			// create playing stack in the middle with one card to start with
 			$this->playStack = new Stack();
-			$this->playStack->addCards($this->deck->giveCards());
+			$this->playStack->addCards($this->deck->giveCards($this->playStack));
 
 			// create player and give cards
 			$this->players['player'] = new Player();
-			$this->players['player']->addCards($this->deck->giveCards(7));
+			$this->players['player']->addCards($this->deck->giveCards($this->playStack, 7));
 
 			// create opponent and give cards
 			$this->players['opponent'] = new Player();
-			$this->players['opponent']->addCards($this->deck->giveCards(7));
+			$this->players['opponent']->addCards($this->deck->giveCards($this->playStack, 7));
 
 			// save instances to session
 			$session->set('playStack_obj', $this->playStack);
@@ -40,7 +40,7 @@ class CardGame
 
 			if(isset($request) && $request->getMethod() == 'POST') {
 				if($request->get('take')) { // take a player card
-					$this->players['player']->addCards($this->deck->giveCards()); // add one card to player cards
+					$this->players['player']->addCards($this->deck->giveCards($this->playStack)); // add one card to player cards
 
 					$computerMove_result = $this->computerMove();
 					$this->renderCards($app, $computerMove_result); // render cards
@@ -106,10 +106,10 @@ class CardGame
 
 				if($type_player == "JK") { // used a joker
 					$targetPlayer = ($inputPlayer == 'opponent' ? 'player' : 'opponent'); // which player to give the card
-					$this->players[$targetPlayer]->addCards($this->deck->giveCards(5));
+					$this->players[$targetPlayer]->addCards($this->deck->giveCards($this->playStack, 5));
 				} else if($number_player == "2") { // opponent has to take two cards
 					$targetPlayer = ($inputPlayer == 'opponent' ? 'player' : 'opponent'); // which player to give the card
-					$this->players[$targetPlayer]->addCards($this->deck->giveCards(2));
+					$this->players[$targetPlayer]->addCards($this->deck->giveCards($this->playStack, 2));
 				}
 
 				$validMove = true; // player made a valid move
@@ -135,7 +135,7 @@ class CardGame
 		$available_card_number = $this->array_find($number_stack, $computer_cards); // do we have a card with the same type?
 
 		if(!$available_card_type && !$available_card_number) { // no card with the same type or number
-			$this->players['opponent']->addCards($this->deck->giveCards()); // grab a card
+			$this->players['opponent']->addCards($this->deck->giveCards($this->playStack)); // grab a card
 		} else { // play the card
 			if($available_card_type != '') { // not the same type but the same number
 				//echo 'valid card type:' . $available_card_type;
