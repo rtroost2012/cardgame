@@ -37,10 +37,10 @@ $app->get('/play/{card}', function($card) use ($app, $session) {
 
 	if($playerMove_result['validMove']) { // player made a valid move
 		$computerMove_result = $cardGame->computerMove();
-		return $app['twig']->render('game.twig', $computerMove_result['validateInfo']); // render cards
+		return $app['twig']->render('game.twig', $computerMove_result); // render cards
 	} else { // didn't make a valid move
 		// render cards
-		return $app['twig']->render('game.twig', $playerMove_result['validateInfo']);// render cards
+		return $app['twig']->render('game.twig', $playerMove_result);// render cards
 	}
 });
 

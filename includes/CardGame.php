@@ -5,7 +5,7 @@ class CardGame
 	private $deck;
 	private $players;
 
-	public function __construct($app, $session, $request = NULL) {
+	public function __construct(Silex\Application $app, Symfony\Component\HttpFoundation\Session\Session $session, $request = NULL) {
 		if(!$session->get('started')) { // no game started yet
 			// session init
 			$session->set('started', true);
@@ -43,7 +43,7 @@ class CardGame
 					$this->players['player']->addCards($this->deck->giveCards()); // add one card to player cards
 
 					$computerMove_result = $this->computerMove();
-					$this->renderCards($app, $computerMove_result['validateInfo']); // render cards
+					$this->renderCards($app, $computerMove_result); // render cards
 				} else if($request->get('reset')) {
 					$session->invalidate(); // reset
 					header("location: /"); // go to main URL for starting a new game
@@ -53,18 +53,19 @@ class CardGame
 		}
 	}
 
-	public function renderCards($app, array $info = NULL) {
+	public function renderCards(Silex\Application $app, array $info = NULL) {
 		if(!isset($info)) { // render with current info
-			return $app['twig']->render('game.twig', array('playstack_card' => $this->lastOnStack(),
+			return $app['twig']->render('game.twig', array('playstack_card' => $this->lastOnPlayStack(),
 													'opponentcards' => $this->players['opponent']->getCards(),
 													'playercards' => $this->players['player']->getCards(),
-													'deck_cardsleft' => $this->deck->countCards()));
+													'deck_cardsleft' => $this->deck->countCards(),
+													'validMove' => true));
 		} else {
 			return $app['twig']->render('game.twig', $info); // render with different info
 		}
 	}
 
-	private function array_find($needle, $haystack) { // search for a partial value in an array and return full value
+	private function array_find($needle, array $haystack) { // search for a partial value in an array and return full value
 	   foreach ($haystack as $item) {
 	      if(strpos($item, $needle) !== FALSE) {
 	         return $item;
@@ -74,8 +75,7 @@ class CardGame
 	   return NULL;
 	}
 
-	private function lastOnStack() {
-		// get last card placed on stack
+	private function lastOnPlayStack() { // get last card placed on stack
 		$lastCard = $this->playStack->getCards();
 		return $lastCard[$this->playStack->countCards()-1];
 	}
@@ -90,7 +90,7 @@ class CardGame
 		//echo '<br>Validating move for: ' . $testplayer;
 
 		// get last card placed on stack
-		$lastCard = $this->lastOnStack();
+		$lastCard = $this->lastOnPlayStack();
 
 		if(in_array($card, $this->players[$inputPlayer]->getCards())) { // check if player has the card
 			$type_stack = substr($lastCard, 0, 2); // card type on the playing stack
@@ -113,24 +113,20 @@ class CardGame
 				}
 
 				$validMove = true; // player made a valid move
-			} else {
-				echo '<p>Please play a card with the same type or number!</p>';
 			}
 		}
 
 		// return info about move validation and rendering
-		$validateInfo = array('playstack_card' => $this->lastOnStack(),
+		return array('playstack_card' => $this->lastOnPlayStack(),
 					'opponentcards' => $this->players['opponent']->getCards(),
 					'playercards' => $this->players['player']->getCards(),
-					'deck_cardsleft' => $this->deck->countCards());
-
-		return array('validMove' => $validMove, 
-					'validateInfo' => $validateInfo);
+					'deck_cardsleft' => $this->deck->countCards(),
+					'validMove' => $validMove);
 	}
 
 	public function ComputerMove() {
 		$computer_cards = $this->players['opponent']->getCards(); // get computer cards
-		$lastCard = $this->lastOnStack();
+		$lastCard = $this->lastOnPlayStack();
 
 		$type_stack = substr($lastCard, 0, 2); // card type on the playing stack
 		$number_stack = substr($lastCard, 2, strlen($lastCard) - 2); // card number on the playing stack
@@ -153,15 +149,11 @@ class CardGame
 		}
 
 		if(!isset($move_result)) { // pc is grabbing card
-			$validateInfo = array('playstack_card' => $this->lastOnStack(),
+			return array('playstack_card' => $this->lastOnPlayStack(),
 						'opponentcards' => $this->players['opponent']->getCards(),
 						'playercards' => $this->players['player']->getCards(),
-						'deck_cardsleft' => $this->deck->countCards());
-
-			//echo 'move_result  = <pre>' . var_export($move_result, true) . '</pre>';
-
-			return array('validMove' => true, 
-						'validateInfo' => $validateInfo);
+						'deck_cardsleft' => $this->deck->countCards(),
+						'validMove' => true);
 
 			//echo ' no move possible';		
 		}

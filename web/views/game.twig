@@ -3,6 +3,22 @@
 	<head>
 		<title>Cardgame</title>
 		<link rel="stylesheet" href="/views/style.css" type="text/css">
+
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+		<script>
+		$(function() {
+			$( "#dialog-message" ).dialog({
+				modal: true,
+				buttons: {
+					Ok: function() {
+						$( this ).dialog( "close" );
+					}
+				}
+			});
+		});
+		</script>
 	</head>
 
 	<body>
@@ -90,6 +106,12 @@
 				<input type='submit' name='reset' value='Reset game'/>
 			</p>
 		</form>
+
+		{% if not validMove %}
+			<div id="dialog-message" title="Invalid move">
+			  <p>You tried to play an invalid card. You can only play a card with the same number or same type (hearts, spades, diams, clubs).</p>
+			</div>
+		{% endif %}
 
 		<footer>
 			Cardgame by Robbin Troost
