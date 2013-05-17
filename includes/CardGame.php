@@ -53,7 +53,7 @@ class CardGame
 		}
 	}
 
-	public function renderCards(Silex\Application $app, array $info = NULL) { // seperate render class
+	public function renderCards(Silex\Application $app, array $info = NULL) { // TODO:seperate render class?
 		if(!isset($info)) { // render with current info
 			return $app['twig']->render('game.twig', array('playstack_card' => $this->lastOnPlayStack(),
 													'opponentcards' => $this->players['opponent']->getCards(),
@@ -130,7 +130,7 @@ class CardGame
 
 		$type_stack = substr($lastCard, 0, 2); // card type on the playing stack
 		$number_stack = substr($lastCard, 2, strlen($lastCard) - 2); // card number on the playing stack
-	
+
 		$available_card_type = $this->array_find($type_stack, $computer_cards); // do we have a card with the same type?
 		$available_card_number = $this->array_find($number_stack, $computer_cards); // do we have a card with the same type?
 
@@ -141,26 +141,23 @@ class CardGame
 				$cardID = rand(0, count($computer_cards) - 1);
 				$move_result = $this->ValidateMove('opponent', $computer_cards[$cardID]);
 			} else { // normal card
-				if($available_card_type != '') { // not the same type but the same number
-					//echo 'valid card type:' . $available_card_type;
-					$playcard =  $available_card_type;
-					$move_result = $this->ValidateMove('opponent', $available_card_type);
-				} else { // same number
-					//echo 'valid card number:' . $available_card_number;
-					$playcard =  $available_card_number;
-					$move_result = $this->ValidateMove('opponent', $available_card_number);
+				// play jokers if needed
+				$jokerIndex = $this->array_find("JK", $computer_cards);
+
+				if(($jokerIndex) && $this->players['player']->countCards() <= 3 || $this->players['opponent']->countCards() <= 3) { // should we play it now?
+					$move_result = $this->ValidateMove('opponent', $jokerIndex);
+				} else { // not a good moment to play the joker
+					$move_result = $this->ValidateMove('opponent', ($available_card_type != '' ? $available_card_type : $available_card_number));
 				}
 			}
 		}
 
-		if(!isset($move_result)) { // pc is grabbing card
+		if(!isset($move_result)) { // pc has grabbed a card
 			return array('playstack_card' => $this->lastOnPlayStack(),
 						'opponentcards' => $this->players['opponent']->getCards(),
 						'playercards' => $this->players['player']->getCards(),
 						'deck_cardsleft' => $this->deck->countCards(),
-						'validMove' => true);
-
-			//echo ' no move possible';		
+						'validMove' => true);	
 		}
 
 		return $move_result; // pc played a card
