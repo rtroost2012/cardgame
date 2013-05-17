@@ -12,7 +12,7 @@
 				<tbody>
 					<!-- card images -->
 					{% for card in opponentcards %}
-						{% set cards_per_row = 10 %} <!-- maximum cards per row -->
+						{% set cards_per_row = 12 %} <!-- maximum cards per row -->
 
 						{% if(loop.index == 1) %} <!-- first row -->
 							<tr>
@@ -37,7 +37,7 @@
 
 		<!-- played çardstack in the middle -->
 		<div class='middlestack'>
-			<img src='/images/H_A.gif' alt='card'/>
+			<img src='/images/{{playstack_card}}.gif' alt='card'/>
 		</div>
 
 		<!-- storage stack in the middle -->
@@ -53,7 +53,7 @@
 				<tbody>
 					<!-- card images -->
 					{% for card in playercards %}
-						{% set cards_per_row = 10 %} <!-- maximum cards per row -->
+						{% set cards_per_row = 12 %} <!-- maximum cards per row -->
 
 						{% if(loop.index == 1) %} <!-- first row -->
 							<tr>
@@ -61,7 +61,7 @@
 
 						<td>
 							<img src='/images/{{ card }}.gif' alt='card'/><br>
-							<input type='button' onClick="location.href='/remove/{{ card }}'" value='Remove'/>
+							<input type='button' onClick="location.href='/play/{{ card }}'" value='Play'/>
 						</td>
 
 						{% if((loop.index % cards_per_row) == 0) %} <!-- new row needed? -->
@@ -79,14 +79,18 @@
 
 		<form action='/' method='POST'>
 			<p>
-				You have currently have {{ playercards | length }} cards.<br>
+				{% if playercards | length == 0 %}
+					You win!<br>
+				{% else %}
+					You have currently have {{ playercards | length }} {{ playercards | length == 1 ? 'card' : 'cards' }}.<br>
+					<input type='submit' name='take' value='Take card'/>
+				{% endif %}
 				<input type='submit' name='reset' value='Reset game'/>
-				<input type='submit' name='take' value='Take card'/>
 			</p>
 		</form>
 
 		<footer>
-			Cardgame v0.1
+			Cardgame by Robbin Troost
 		</footer>
 	</body>
 </html>

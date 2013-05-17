@@ -23,6 +23,11 @@ class Stack
 		return $cards;
 	}
 
+	public function addCards(array $cards) {
+		$this->cards = array_merge($this->cards, $cards); // add cards to array
+		// echo '<pre>' . var_export($this->cards, true) . '</pre>';
+	}
+
 	public function countCards() {
 		return count($this->cards); // return amount of cards
 	}
