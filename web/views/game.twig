@@ -18,6 +18,13 @@
 				}
 			});
 		});
+
+		$(function() {
+			$( "input[type=submit], input[type=button]" )
+			.button().click(function( event ) {
+
+			});
+		});
 		</script>
 	</head>
 
@@ -25,21 +32,19 @@
 		{% if playercards | length == 0 or opponentcards | length == 0 %}
 			{% if playercards | length == 0 %}
 				<div id="dialog-message" title="Information">
-					<p>You win!</p>
+					<p>Congratulations, you've won!</p>
 				</div>
-
-				You win!<br>
 			{% elseif opponentcards | length == 0 %}
 				<div id="dialog-message" title="Information">
-					<p>You lose!</p>
+					<p>Too bad, you've lost!</p>
 				</div>
-
-				You lose!<br>
 			{% endif %}
 
-			<form action='/' method='POST'>
-				<input type='submit' name='reset' value='Reset game'/>
-			</form>
+			<p>
+				<form action='/' method='POST'>
+					<input type='submit' name='reset' value='Reset game'/>
+				</form>
+			</p>
 		{% else %}
 			<!-- opponent -->
 			{% if opponentcards | length != 0 %}
@@ -114,7 +119,7 @@
 
 			<form action='/' method='POST'>
 				<p>
-					You have currently have {{ playercards | length }} {{ playercards | length == 1 ? 'card' : 'cards' }}
+					You currently have {{ playercards | length }} {{ playercards | length == 1 ? 'card' : 'cards' }}.<br>
 					<input type='submit' name='take' value='Take card'/>
 					<input type='submit' name='reset' value='Reset game'/>
 				</p>

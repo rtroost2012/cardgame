@@ -53,7 +53,7 @@ class CardGame
 		}
 	}
 
-	public function renderCards(Silex\Application $app, array $info = NULL) {
+	public function renderCards(Silex\Application $app, array $info = NULL) { // seperate render class
 		if(!isset($info)) { // render with current info
 			return $app['twig']->render('game.twig', array('playstack_card' => $this->lastOnPlayStack(),
 													'opponentcards' => $this->players['opponent']->getCards(),
@@ -134,17 +134,22 @@ class CardGame
 		$available_card_type = $this->array_find($type_stack, $computer_cards); // do we have a card with the same type?
 		$available_card_number = $this->array_find($number_stack, $computer_cards); // do we have a card with the same type?
 
-		if(!$available_card_type && !$available_card_number) { // no card with the same type or number
+		if($type_stack != "JK" && !$available_card_type && !$available_card_number) { // no card with the same type or number
 			$this->players['opponent']->addCards($this->deck->giveCards($this->playStack)); // grab a card
 		} else { // play the card
-			if($available_card_type != '') { // not the same type but the same number
-				//echo 'valid card type:' . $available_card_type;
-				$playcard =  $available_card_type;
-				$move_result = $this->ValidateMove('opponent', $available_card_type);
-			} else { // same number
-				//echo 'valid card number:' . $available_card_number;
-				$playcard =  $available_card_number;
-				$move_result = $this->ValidateMove('opponent', $available_card_number);
+			if($type_stack == "JK") { // joker on the stack
+				$cardID = rand(0, count($computer_cards) - 1);
+				$move_result = $this->ValidateMove('opponent', $computer_cards[$cardID]);
+			} else { // normal card
+				if($available_card_type != '') { // not the same type but the same number
+					//echo 'valid card type:' . $available_card_type;
+					$playcard =  $available_card_type;
+					$move_result = $this->ValidateMove('opponent', $available_card_type);
+				} else { // same number
+					//echo 'valid card number:' . $available_card_number;
+					$playcard =  $available_card_number;
+					$move_result = $this->ValidateMove('opponent', $available_card_number);
+				}
 			}
 		}
 
