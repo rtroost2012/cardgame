@@ -114,6 +114,9 @@ class CardGame
 
 				$validMove = true; // player made a valid move
 			}
+		} else {
+			echo 'Player: ' . $inputPlayer . ' is trying to play card ' . $card . '<br>';
+			echo 'The cards he has: <pre>' . var_export($this->players[$inputPlayer]->getCards(), true) . '</pre>';
 		}
 
 		// return info about move validation and rendering
@@ -144,10 +147,10 @@ class CardGame
 				// play jokers if needed
 				$jokerIndex = $this->array_find("JK", $computer_cards);
 
-				if(($jokerIndex) && $this->players['player']->countCards() <= 3 || $this->players['opponent']->countCards() <= 3) { // should we play it now?
+				if(($jokerIndex !== NULL) && ($this->players['player']->countCards() <= 3 || $this->players['opponent']->countCards() <= 3)) { // should we play it now?
 					$move_result = $this->ValidateMove('opponent', $jokerIndex);
 				} else { // not a good moment to play the joker
-					$move_result = $this->ValidateMove('opponent', ($available_card_type != '' ? $available_card_type : $available_card_number));
+					$move_result = $this->ValidateMove('opponent', ($available_card_type != NULL ? $available_card_type : $available_card_number));
 				}
 			}
 		}
@@ -159,7 +162,6 @@ class CardGame
 						'deck_cardsleft' => $this->deck->countCards(),
 						'validMove' => true);	
 		}
-
 		return $move_result; // pc played a card
 	}
 }

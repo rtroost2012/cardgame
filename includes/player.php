@@ -1,6 +1,8 @@
 <?PHP
 class Player extends Stack
 {
+	// isComputer ?
+	
 	public function __construct() {
 		// 
 	}
