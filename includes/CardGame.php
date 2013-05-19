@@ -114,9 +114,6 @@ class CardGame
 
 				$validMove = true; // player made a valid move
 			}
-		} else {
-			echo 'Player: ' . $inputPlayer . ' is trying to play card ' . $card . '<br>';
-			echo 'The cards he has: <pre>' . var_export($this->players[$inputPlayer]->getCards(), true) . '</pre>';
 		}
 
 		// return info about move validation and rendering

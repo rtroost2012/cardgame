@@ -42,7 +42,7 @@
 
 			<p>
 				<form action='/' method='POST'>
-					<input type='submit' name='reset' value='Reset game'/>
+					<input type='submit' name='reset' value='Start a new game'/>
 				</form>
 			</p>
 		{% else %}
@@ -59,7 +59,13 @@
 							{% endif %}
 
 							<td>
-								<img src='/images/{{ card }}.gif' alt='card'/><br>
+								{% set showcards = false %} <!-- show computer cards? -->
+
+								{% if showcards %}
+									<img src='/images/{{ card }}.gif' alt='card'/><br>
+								{% else %}
+									<img src='/images/blank.gif' alt='card'/><br>
+								{% endif %}
 							</td>
 
 							{% if((loop.index % cards_per_row) == 0) %} <!-- new row needed? -->
@@ -119,15 +125,15 @@
 
 			<form action='/' method='POST'>
 				<p>
-					You currently have {{ playercards | length }} {{ playercards | length == 1 ? 'card' : 'cards' }}.<br>
+					You currently have {{ playercards | length }} {{ playercards | length == 1 ? 'card' : 'cards' }} left.<br>
 					<input type='submit' name='take' value='Take card'/>
-					<input type='submit' name='reset' value='Reset game'/>
+					<input type='submit' name='reset' value='New game'/>
 				</p>
 			</form>
 
 			{% if not validMove %}
 				<div id="dialog-message" title="Invalid move">
-					<p>You tried to play an invalid card. You can only play a card with the same number or same type (hearts, spades, diams, clubs).</p>
+					<p>You tried to play an invalid card. You can only play a card with the same number or same type (hearts, spades, diamonds, clubs).</p>
 				</div>
 			{% endif %}
 		{% endif %}
