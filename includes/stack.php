@@ -20,17 +20,19 @@ class Stack
 				// how big is the play stack?
 				$totalCards = count($playStack->cards) - 1;
 
-				// remove all cards except the one that was played
-				$this->cards = array_slice($playStack->cards, 0, $totalCards);
-				$this->shuffle();
+				if($totalCards != 0) { // in a rare occasion the player could be holding many cards so that the stack can't be reset
+					// remove all cards except the one that was played
+					$this->cards = array_slice($playStack->cards, 0, $totalCards);
+					$this->shuffle();
 
-				// unset played cards
-				for($i = 0; $i < $totalCards; $i++) {
-					unset($playStack->cards[$i]);
-				}
+					// unset played cards
+					for($i = 0; $i < $totalCards; $i++) {
+						unset($playStack->cards[$i]);
+					}
 
-				$playStack->cards = array_values($playStack->cards); //recount indexes
-				array_push($cards, array_pop($this->cards)); // save card to array
+					$playStack->cards = array_values($playStack->cards); //recount indexes
+					array_push($cards, array_pop($this->cards)); // save card to array
+					}
 			}
 		}
 		return $cards;

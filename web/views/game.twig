@@ -126,8 +126,7 @@
 					</tbody>
 				</table>
 			{% endif %}
-
-			
+		
 			<p>
 				You currently have {{ playercards | length }} {{ playercards | length == 1 ? 'card' : 'cards' }} left.<br>
 
@@ -142,7 +141,7 @@
 
 			{% if not validMove %}
 				<div id="dialog-message" title="Invalid move">
-					<p>You tried to play an invalid card. You can only play a card with the same number or same type (hearts, spades, diamonds, clubs).</p>
+					<p>You've tried to play an invalid card. You can only play a card with the same number or same type (hearts, spades, diamonds, clubs).</p>
 				</div>
 			{% endif %}
 		{% endif %}
@@ -153,9 +152,11 @@
 
 		<script>
 		function rewriteDocument(data) {
-			document.open();
-			document.write(data);
-			document.close();
+			var scroll = $(window).scrollTop(); // save scroll position
+			document.open(); // open document
+			document.write(data); // re-write document with new data
+			document.close(); // close document
+			$(window).scrollTop(scroll); // set back scroll position to what it was before re-writing
 		}
 
 		$(".playcard").submit(function(event) {
@@ -195,6 +196,5 @@
 			});
 		});
 		</script>
-
 	</body>
 </html>

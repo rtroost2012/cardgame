@@ -38,7 +38,7 @@ class CardGame
 			$this->players = array('player' => $session->get('player_obj'),
 									'opponent' => $session->get('opponent_obj'));
 
-			//if(isset($request) && $request->getMethod() == 'POST') {
+			if(isset($request) && $request->getMethod() == 'POST') {
 				if($request->get('take')) { // take a player card
 					$this->players['player']->addCards($this->deck->giveCards($this->playStack)); // add one card to player cards
 
@@ -49,7 +49,9 @@ class CardGame
 					header("location: /"); // go to main URL for starting a new game
 					exit; // don't further execute the code
 				}
-			//}
+			} else {
+				echo 'get request';
+			}
 		}
 	}
 
