@@ -10,23 +10,22 @@ class Stack
 
 	public function giveCards($playStack = NULL, $amount = 1) {
 		$cards = array();
-		
+
 		for($i = 0; $i < $amount; $i++) { // loop through amount of cards to add
 			$card = array_pop($this->cards); // get the last card in the deck
 
 			if($card) {
 				array_push($cards, $card); // save card to array
 			} else {
-				// how big is the stack?
-				$last = count($playStack->cards) - 1;
+				// how big is the play stack?
+				$totalCards = count($playStack->cards) - 1;
 
 				// remove all cards except the one that was played
-				$this->cards = array_slice($playStack->cards, 0, $last);
-				$this->cards = array_values($this->cards);
+				$this->cards = array_slice($playStack->cards, 0, $totalCards);
 				$this->shuffle();
 
 				// unset played cards
-				for($i = 0; $i < $last; $i++) {
+				for($i = 0; $i < $totalCards; $i++) {
 					unset($playStack->cards[$i]);
 				}
 

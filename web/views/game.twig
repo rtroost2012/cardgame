@@ -41,7 +41,7 @@
 			{% endif %}
 
 			<p>
-				<form action='/' method='POST'>
+				<form action='/' id='reset' method='POST'>
 					<input type='submit' name='reset' value='Start a new game'/>
 				</form>
 			</p>
@@ -107,7 +107,11 @@
 
 							<td>
 								<img src='/images/{{ card }}.gif' alt='card'/><br>
-								<input type='button' onClick="location.href='/play/{{ card }}'" value='Play'/>
+
+								<form action='/play' class='playcard' method='post'>
+									<input type='submit' class='play' value='Play'/>
+									<input type='hidden' name='card' value='{{ card }}'>
+								</form>
 							</td>
 
 							{% if((loop.index % cards_per_row) == 0) %} <!-- new row needed? -->
@@ -123,13 +127,18 @@
 				</table>
 			{% endif %}
 
-			<form action='/' method='POST'>
-				<p>
-					You currently have {{ playercards | length }} {{ playercards | length == 1 ? 'card' : 'cards' }} left.<br>
-					<input type='submit' name='take' value='Take card'/>
-					<input type='submit' name='reset' value='New game'/>
-				</p>
-			</form>
+			
+			<p>
+				You currently have {{ playercards | length }} {{ playercards | length == 1 ? 'card' : 'cards' }} left.<br>
+
+				<form action='/' id='take' method='post'>
+					<input type='submit' value='Take card'/>
+				</form>
+
+				<form action='/' id='reset' method='post'>
+					<input type='submit' value='New game'/>
+				</form>
+			</p>
 
 			{% if not validMove %}
 				<div id="dialog-message" title="Invalid move">
@@ -141,5 +150,51 @@
 		<footer>
 			Cardgame by Robbin Troost
 		</footer>
+
+		<script>
+		function rewriteDocument(data) {
+			document.open();
+			document.write(data);
+			document.close();
+		}
+
+		$(".playcard").submit(function(event) {
+			event.preventDefault();
+
+			var $form = $( this ),
+			card_val = $form.find( 'input[name="card"]' ).val(),
+			url = $form.attr( 'action' );
+		 
+			var posting = $.post( url, { card: card_val } );
+			posting.done(function( data ) {
+				rewriteDocument(data);
+			});
+		});
+
+		$("#take").submit(function(event) {
+			event.preventDefault();
+
+			var $form = $( this ),
+			url = $form.attr( 'action' );
+
+			var posting = $.post( url, { take:true } );
+			posting.done(function( data ) {
+				rewriteDocument(data);
+			});
+		});
+
+		$("#reset").submit(function(event) {
+			event.preventDefault();
+
+			var $form = $( this ),
+			url = $form.attr( 'action' );
+
+			var posting = $.post( url, { reset:true } );
+			posting.done(function( data ) {
+				rewriteDocument(data);
+			});
+		});
+		</script>
+
 	</body>
 </html>

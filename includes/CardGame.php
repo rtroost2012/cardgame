@@ -1,4 +1,4 @@
-<?PHP
+	<?PHP
 class CardGame
 {
 	private $playStack;
@@ -38,7 +38,7 @@ class CardGame
 			$this->players = array('player' => $session->get('player_obj'),
 									'opponent' => $session->get('opponent_obj'));
 
-			if(isset($request) && $request->getMethod() == 'POST') {
+			//if(isset($request) && $request->getMethod() == 'POST') {
 				if($request->get('take')) { // take a player card
 					$this->players['player']->addCards($this->deck->giveCards($this->playStack)); // add one card to player cards
 
@@ -49,7 +49,7 @@ class CardGame
 					header("location: /"); // go to main URL for starting a new game
 					exit; // don't further execute the code
 				}
-			}
+			//}
 		}
 	}
 
@@ -86,8 +86,6 @@ class CardGame
 
 		// not a valid move yet
 		$validMove = false;
-
-		//echo '<br>Validating move for: ' . $testplayer;
 
 		// get last card placed on stack
 		$lastCard = $this->lastOnPlayStack();
@@ -142,10 +140,10 @@ class CardGame
 				$move_result = $this->ValidateMove('opponent', $computer_cards[$cardID]);
 			} else { // normal card
 				// play jokers if needed
-				$jokerIndex = $this->array_find("JK", $computer_cards);
+				$computer_jokerIndex = $this->array_find("JK", $computer_cards);
 
-				if(($jokerIndex !== NULL) && ($this->players['player']->countCards() <= 3 || $this->players['opponent']->countCards() <= 3)) { // should we play it now?
-					$move_result = $this->ValidateMove('opponent', $jokerIndex);
+				if(($computer_jokerIndex !== NULL) && ($this->players['player']->countCards() <= 3 || $this->players['opponent']->countCards() <= 3)) { // should we play it now?
+					$move_result = $this->ValidateMove('opponent', $computer_jokerIndex);
 				} else { // not a good moment to play the joker
 					$move_result = $this->ValidateMove('opponent', ($available_card_type != NULL ? $available_card_type : $available_card_number));
 				}

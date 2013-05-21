@@ -28,12 +28,12 @@ $app->match('/', function(Request $request) use ($app, $session) {
 	return $cardGame->renderCards($app);
 });
 
-$app->get('/play/{card}', function($card) use ($app, $session) {
+$app->post('/play', function(Request $request) use ($app, $session) {
 	// init cardgame class
-	$cardGame = new CardGame($app, $session);
+	$cardGame = new CardGame($app, $session, $request);
 
 	// validate player move
-	$playerMove_result = $cardGame->ValidateMove('player', $card);
+	$playerMove_result = $cardGame->ValidateMove('player', $request->get('card'));
 
 	if($playerMove_result['validMove']) { // player made a valid move
 		$computerMove_result = $cardGame->computerMove();
