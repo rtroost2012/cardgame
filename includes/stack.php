@@ -53,8 +53,4 @@ class Stack
 	public function shuffle() {
 		return shuffle($this->cards); // shuffle cards
 	}
-
-	public function clear() { 
-		$this->cards = array(); // reset deck
-	}
 }

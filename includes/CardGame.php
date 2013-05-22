@@ -38,12 +38,10 @@ class CardGame
 			$this->players = array('player' => $session->get('player_obj'),
 									'opponent' => $session->get('opponent_obj'));
 
-			if(isset($request) && $request->getMethod() == 'POST') {
+			if($request->getMethod() == 'POST') {
 				if($request->get('take')) { // take a player card
 					$this->players['player']->addCards($this->deck->giveCards($this->playStack)); // add one card to player cards
-
-					$computerMove_result = $this->computerMove();
-					$this->renderCards($app, $computerMove_result); // render cards
+					$this->renderCards($app, $this->computerMove()); // render cards
 				} else if($request->get('reset')) {
 					$session->invalidate(); // reset
 					header("location: /"); // go to main URL for starting a new game
