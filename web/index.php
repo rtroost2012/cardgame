@@ -32,15 +32,14 @@ $app->post('/play', function(Request $request) use ($app, $session) {
 	$cardGame = new CardGame($app, $session, $request);
 
 	// validate player move
-	$playerMove_result = $cardGame->ValidateMove('player', $request->get('card'));
+	$playerMove_result = $cardGame->ValidateMove('player', $request->get('card')); // validate player move
 
 	if($playerMove_result['validMove']) { // player made a valid move
-		$computerMove_result = $cardGame->computerMove();
-		return $app['twig']->render('game.twig', $computerMove_result); // render cards
-	} else { // didn't make a valid move
-		// render cards
-		return $app['twig']->render('game.twig', $playerMove_result);// render cards
+		$computerMove_result = $cardGame->computerMove(); // make the computer move
 	}
+
+	$renderResult = (isset($computerMove_result) ? $computerMove_result : $playerMove_result); // always display latest move so if the PC has made one then we will show that one
+	return $cardGame->renderCards($app, $renderResult); // render cards
 });
 
 $app->run();
