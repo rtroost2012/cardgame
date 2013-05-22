@@ -63,14 +63,17 @@ class CardGame
 		}
 	}
 
-	private function array_find($needle, array $haystack) { // search for a partial value in an array and return full value
-	   foreach ($haystack as $item) {
-	      if(strpos($item, $needle) !== FALSE) {
-	         return $item;
-	         break;
-	      }
-	   }
-	   return NULL;
+	private function array_find($needle, array $haystack, $ignoreStack = false) { // search for a partial value in an array and return full value
+		foreach ($haystack as $item) {
+			if((!$ignoreStack) && $item == "JK" && $needle == "JK") { // computer is not trying to put a joker card on a 'J' or 'K'card
+				continue;
+			}
+
+			if(strpos($item, $needle) !== FALSE) {
+				return $item;
+			}
+		}
+		return NULL;
 	}
 
 	private function lastOnPlayStack() { // get last card placed on stack
@@ -94,7 +97,7 @@ class CardGame
 			$number_stack = substr($lastCard, 2, strlen($lastCard) - 2); // card number on the playing stack
 			$number_player = substr($card, 2, strlen($card) - 2); // card number the player is trying to play
 
-			//echo 'Number on stack: ' . $number_stack . ' \\ Number im trying to play: ' . $number_player;
+		//	echo '[Player \'' . $inputPlayer . '\'] Number on stack: ' . $number_stack . ' -> trying to play: ' . $number_player . ' or ' . $type_player . '<br>';
 
 			if($type_player == $type_stack || $number_player == $number_stack || $type_player == "JK" || $type_stack == "JK" ) { // joker, same type or same number
 				$this->playStack->addCards(array($card)); // add card to playing stack
@@ -138,7 +141,7 @@ class CardGame
 				$move_result = $this->ValidateMove('opponent', $computer_cards[$cardID]);
 			} else { // normal card
 				// play jokers if needed
-				$computer_jokerIndex = $this->array_find("JK", $computer_cards);
+				$computer_jokerIndex = $this->array_find("JK", $computer_cards, true);
 
 				if(($computer_jokerIndex !== NULL) && ($this->players['player']->countCards() <= 3 || $this->players['opponent']->countCards() <= 3)) { // should we play it now?
 					$move_result = $this->ValidateMove('opponent', $computer_jokerIndex);
