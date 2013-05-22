@@ -52,15 +52,14 @@ class CardGame
 	}
 
 	public function renderCards(Silex\Application $app, array $info = NULL) { // TODO:seperate render class?
-		if(!isset($info)) { // render with current info
-			return $app['twig']->render('game.twig', array('playstack_card' => $this->lastOnPlayStack(),
+		$defaultInfo = array('playstack_card' => $this->lastOnPlayStack(),
 													'opponentcards' => $this->players['opponent']->getCards(),
 													'playercards' => $this->players['player']->getCards(),
 													'deck_cardsleft' => $this->deck->countCards(),
-													'validMove' => true));
-		} else {
-			return $app['twig']->render('game.twig', $info); // render with different info
-		}
+													'validMove' => true);
+
+		$renderResult = (isset($info) ? $info : $defaultInfo); // render with default or changed info?
+		return $app['twig']->render('game.twig', $renderResult); // render
 	}
 
 	private function array_find($needle, array $haystack, $ignoreStack = false) { // search for a partial value in an array and return full value
