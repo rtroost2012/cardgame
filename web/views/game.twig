@@ -50,16 +50,15 @@
 			{% if opponentcards | length != 0 %}
 				<table>
 					<tbody>
-						<!-- card images -->
 						{% for card in opponentcards %}
-							{% set cards_per_row = 12 %} <!-- maximum cards per row -->
+							{% set cards_per_row = 12 %}  {# maximum cards per row #}
 
-							{% if(loop.index == 1) %} <!-- first row -->
+							{% if(loop.index == 1) %} {# first row #}
 								<tr>
 							{% endif %}
 
 							<td>
-								{% set showcards = false %} <!-- show computer cards? -->
+								{% set showcards = false %} {# show computer cards? #}
 
 								{% if showcards %}
 									<img src='/images/{{ card }}.gif' alt='card'/><br>
@@ -68,12 +67,12 @@
 								{% endif %}
 							</td>
 
-							{% if((loop.index % cards_per_row) == 0) %} <!-- new row needed? -->
-								</tr> <!-- close old row -->
-								<tr> <!-- start new row -->
+							{% if((loop.index % cards_per_row) == 0) %} {# new row needed? #}
+								</tr>  {# close old row #}
+								<tr>  {# start new row #}
 							{% endif %}
 
-							{% if(loop.index == opponentcards | length) %} <!-- last row -->
+							{% if(loop.index == opponentcards | length) %} {# last row #}
 								</tr>
 							{% endif %}
 						{% endfor %}
@@ -97,11 +96,10 @@
 			{% if playercards | length != 0 %}
 				<table>
 					<tbody>
-						<!-- card images -->
 						{% for card in playercards %}
-							{% set cards_per_row = 12 %} <!-- maximum cards per row -->
+							{% set cards_per_row = 12 %} {# maximum cards per row #}
 
-							{% if(loop.index == 1) %} <!-- first row -->
+							{% if(loop.index == 1) %} {# first row #}
 								<tr>
 							{% endif %}
 
@@ -114,12 +112,12 @@
 								</form>
 							</td>
 
-							{% if((loop.index % cards_per_row) == 0) %} <!-- new row needed? -->
-								</tr> <!-- close old row -->
-								<tr> <!-- start new row -->
+							{% if((loop.index % cards_per_row) == 0) %} {# new row needed? #}
+								</tr> {# close old row #}
+								<tr> {# start new row #}
 							{% endif %}
 
-							{% if(loop.index == playercards | length) %} <!-- last row -->
+							{% if(loop.index == playercards | length) %} {# last row #}
 								</tr>
 							{% endif %}
 						{% endfor %}

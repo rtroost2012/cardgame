@@ -47,10 +47,8 @@ class CardGame
 				} else if($request->get('reset')) {
 					$session->invalidate(); // reset
 					header("location: /"); // go to main URL for starting a new game
-					exit; // don't further execute the code
+					exit(); // don't further execute the code
 				}
-			} else {
-				echo 'get request';
 			}
 		}
 	}
@@ -137,7 +135,7 @@ class CardGame
 		if($type_stack != "JK" && !$available_card_type && !$available_card_number) { // no card with the same type or number
 			$this->players['opponent']->addCards($this->deck->giveCards($this->playStack)); // grab a card
 		} else { // play the card
-			if($type_stack == "JK") { // joker on the stack
+			if($type_stack == "JK") { //  // joker on the playing stack, we can choose a card to play
 				$cardID = rand(0, count($computer_cards) - 1);
 				$move_result = $this->ValidateMove('opponent', $computer_cards[$cardID]);
 			} else { // normal card

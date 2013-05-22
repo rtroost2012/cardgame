@@ -18,7 +18,6 @@ use Symfony\Component\HttpFoundation\Session\Session;
 $session = new Session();
 $session->start();
 
-
 // routes
 $app->match('/', function(Request $request) use ($app, $session) {
 	// init cardgame class
