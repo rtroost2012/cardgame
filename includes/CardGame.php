@@ -6,10 +6,7 @@ class CardGame
 	private $players;
 
 	public function __construct(Silex\Application $app, Symfony\Component\HttpFoundation\Session\Session $session, $request = NULL) {
-		if(!$session->get('started')) { // no game started yet
-			// session init
-			$session->set('started', true);
-
+		if(!$session->get('player_obj')) { // no game started yet
 			// create deck
 			$this->deck = new Deck();
 			$this->deck->shuffle();
@@ -58,8 +55,7 @@ class CardGame
 													'deck_cardsleft' => $this->deck->countCards(),
 													'validMove' => true);
 
-		$renderResult = (isset($info) ? $info : $defaultInfo); // render with default or changed info?
-		return $app['twig']->render('game.twig', $renderResult); // render
+		return $app['twig']->render('game.twig', (isset($info) ? $info : $defaultInfo)); // render with default or changed info?
 	}
 
 	private function findCard($card, array $targetStack, $ignoreStack = false) { // search for a partial value in an array and return full value
