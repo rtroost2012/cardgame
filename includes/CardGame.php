@@ -23,7 +23,7 @@ class CardGame
 			$this->players['player']->addCards($this->deck->giveCards($this->playStack, 7));
 
 			// create opponent and give cards
-			$this->players['opponent'] =new Player();
+			$this->players['opponent'] = new Player();
 			$this->players['opponent']->addCards($this->deck->giveCards($this->playStack, 7));
 
 			// save instances to session
@@ -62,14 +62,14 @@ class CardGame
 		return $app['twig']->render('game.twig', $renderResult); // render
 	}
 
-	private function array_find($needle, array $haystack, $ignoreStack = false) { // search for a partial value in an array and return full value
-		foreach ($haystack as $item) {
-			if((!$ignoreStack) && $item == "JK" && $needle == "JK") { // computer is not trying to put a joker card on a 'J' or 'K'card
+	private function findCard($card, array $targetStack, $ignoreStack = false) { // search for a partial value in an array and return full value
+		foreach ($targetStack as $targetCard) {
+			if((!$ignoreStack) && $targetCard == "JK" && $card == "JK") { // computer is not trying to put a joker card on a 'J' or 'K'card
 				continue;
 			}
 
-			if(strpos($item, $needle) !== FALSE) {
-				return $item;
+			if(strpos($targetCard, $card) !== FALSE) {
+				return $targetCard;
 			}
 		}
 		return NULL;
@@ -94,9 +94,7 @@ class CardGame
 			$type_stack = substr($lastCard, 0, 2); // card type on the playing stack
 			$type_player = substr($card, 0, 2); // card type the player is trying to play
 			$number_stack = substr($lastCard, 2, strlen($lastCard) - 2); // card number on the playing stack
-			$number_player = substr($card, 2, strlen($card) - 2); // card number the player is trying to play
-
-		//	echo '[Player \'' . $inputPlayer . '\'] Number on stack: ' . $number_stack . ' -> trying to play: ' . $number_player . ' or ' . $type_player . '<br>';
+			$number_player = substr($card, 2, strlen($card) - 2); // card number the player is trying to play]
 
 			if($type_player == $type_stack || $number_player == $number_stack || $type_player == "JK" || $type_stack == "JK" ) { // joker, same type or same number
 				$this->playStack->addCards(array($card)); // add card to playing stack
@@ -123,30 +121,36 @@ class CardGame
 	}
 
 	public function ComputerMove() {
-		if($this->players['player']->getCards() != 0) { // player did not place his last card
+		if($this->players['player']->countCards() != 0) { // player did not place his last card
 			$computer_cards = $this->players['opponent']->getCards(); // get computer cards
 			$lastCard = $this->lastOnPlayStack();
 
 			$type_stack = substr($lastCard, 0, 2); // card type on the playing stack
 			$number_stack = substr($lastCard, 2, strlen($lastCard) - 2); // card number on the playing stack
 
-			$available_card_type = $this->array_find($type_stack, $computer_cards); // do we have a card with the same type?
-			$available_card_number = $this->array_find($number_stack, $computer_cards); // do we have a card with the same type?
+			$available_card_type = $this->findCard($type_stack, $computer_cards); // do we have a card with the same type?
+			$available_card_number = $this->findCard($number_stack, $computer_cards); // do we have a card with the same type?
 
 			if($type_stack != "JK" && !$available_card_type && !$available_card_number) { // no card with the same type or number
 				$this->players['opponent']->addCards($this->deck->giveCards($this->playStack)); // grab a card
 			} else { // play the card
-				if($type_stack == "JK") { //  // joker on the playing stack, we can choose a card to play
+				if($type_stack == "JK") { // joker on the playing stack, we can choose a card to play
 					$cardID = rand(0, count($computer_cards) - 1);
 					$move_result = $this->ValidateMove('opponent', $computer_cards[$cardID]);
 				} else { // normal card
 					// play jokers if needed
-					$computer_jokerIndex = $this->array_find("JK", $computer_cards, true);
+					$computer_jokerIndex = $this->findCard("JK", $computer_cards, true);
+					$computer_normalIndex = ($available_card_type != NULL ? $available_card_type : $available_card_number);
 
 					if(($computer_jokerIndex !== NULL) && ($this->players['player']->countCards() <= 3 || $this->players['opponent']->countCards() <= 3)) { // should we play it now?
-						$move_result = $this->ValidateMove('opponent', $computer_jokerIndex);
+						// make it random but make sure to play it if either one of the players has two cards left so we don't end up with only a joker
+						if((rand(0, 1) == 1) || $this->players['player']->countCards() == 2 || $this->players['opponent']->countCards() == 2) {
+							$move_result = $this->ValidateMove('opponent', $computer_jokerIndex);
+						} else {
+							$move_result = $this->ValidateMove('opponent', $computer_normalIndex);	
+						}
 					} else { // not a good moment to play the joker
-						$move_result = $this->ValidateMove('opponent', ($available_card_type != NULL ? $available_card_type : $available_card_number));
+						$move_result = $this->ValidateMove('opponent', $computer_normalIndex);
 					}
 				}
 			}
