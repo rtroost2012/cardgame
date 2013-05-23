@@ -150,7 +150,7 @@
 
 		<script>
 		function submitPost(url, data) {
-			var postRequest = $.post( url, data );
+			var postRequest = $.post(url, data);
 
 			postRequest.done(function( data ) { // rewrite document when post request is done
 				var scroll = $(window).scrollTop(); // save scroll position
@@ -158,6 +158,14 @@
 				document.write(data); // re-write document with new data
 				document.close(); // close document
 				$(window).scrollTop(scroll); // set back scroll position to what it was before re-writing
+			});
+
+			postRequest.fail(function(data) { // error handler
+				if(postRequest.status == 0) {
+					alert('Network problem occurred!');
+				} else {
+					alert('Server returned error code ' + postRequest.status + '.');
+				}
 			});
 		}
 
