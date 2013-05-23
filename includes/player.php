@@ -27,4 +27,8 @@ class Player extends Stack
 			}
 		}
 	}
+
+	public function clearCards() {
+		$this->cards = array(); // clear cards
+	}
 }

@@ -43,6 +43,25 @@ class CardGame
 					$session->invalidate(); // reset
 					header("location: /"); // go to main URL for starting a new game
 					exit(); // don't further execute the code
+				} else if($request->get('cheats')) { // handle cheats
+					if($request->get('stealJokers')) {
+						$jokerIndex = $this->findCard('JK', $this->players['opponent']->getCards(), true); // does the PC have jokers?
+
+						while($jokerIndex) {
+							$this->players['opponent']->removeCards(array('JK')); // remove from opponent deck
+							$this->players['player']->addCards(array('JK')); // give to player
+							$this->players['opponent']->addCards($this->deck->giveCards($this->playStack)); // give opponent a new card
+
+							$jokerIndex = $this->findCard('JK', $this->players['opponent']->getCards(), true); // more jokers to steal?
+						}
+					} else if($request->get('instantWin')) { // player wins
+						$this->players['player']->clearCards();
+					} else if($request->get('instantLose')) { // opponent wins
+						$this->players['opponent']->clearCards();
+					} else if($request->get('cpuCards')) {
+						$this->players['opponent']->addCards($this->deck->giveCards($this->playStack, 15)); // add 15 cards to cpu deck
+					}
+					$this->renderCards($app); // render cards
 				}
 			}
 		}
