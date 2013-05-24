@@ -8,8 +8,24 @@
 		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 
-		<script src='/views/jquery_style.js'></script>
-		<script src='/views/ajax.js'></script>
+		<script>
+		$(function() {
+			$( "input[type=submit]" ).button();
+			$( "#dialog-message" ).dialog({
+				modal: true,
+				buttons: {
+					Ok: function() {
+						$( this ).dialog( "close" );
+					}
+				}
+			});
+		});
+		</script>
+		<script>
+			$(document).ready(function() {
+			    $.getScript("/views/ajax.js");
+			});
+		</script>
 	</head>
 
 	<body>
