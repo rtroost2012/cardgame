@@ -7,9 +7,7 @@ require_once __DIR__ . '/../includes/CardGame.php';
 
 $app = new Silex\Application();
 
-$app->register(new Silex\Provider\TwigServiceProvider(), array(
-    'twig.path' => __DIR__.'/views',
-));
+$app->register(new Silex\Provider\TwigServiceProvider(), array('twig.path' => __DIR__.'/views'));
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
